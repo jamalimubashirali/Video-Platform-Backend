@@ -165,26 +165,33 @@ const logoutUser = asyncHandler (async (req , res) => {
     );
 })
 
+
+// Method to create newRefresh Token
 const getNewRefreshToken = asyncHandler(async (req , res) => {
     try {
         const oldRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
-    
+        
+        // Checking existance of Old refresh Token
         if(!oldRefreshToken) {
             throw new ApiError(401 , "Unauthorized User");
         }
-    
+        
+        // Verifying old refresh token with secret key to ensure that is same
         const verifedToken = jwt.verify(oldRefreshToken , process.env.REFRESH_TOKEN_SECRET);
-    
+        
+        // If not verified throwing Error to ensure the falsity of the statement
         if(!verifedToken) {
             throw new ApiError(401 , "Unauthorized Access");
         }
     
         const user = await User.findById(verifedToken._id);
-    
+        
+        // If checking if user exists in database or not.
         if(!user) {
             throw new ApiError(404 , "No Identity found with this id");
         }
-    
+        
+        // comparing given Refresh token and refresh token stored at the user side to ensure they are same
         if(oldRefreshToken !== user?.refreshToken) {
             throw new ApiError(401 , "Expired Token");
         }
@@ -193,7 +200,8 @@ const getNewRefreshToken = asyncHandler(async (req , res) => {
             httpOnly : true,
             secure : true
         }
-    
+        
+        // Generating all new user token if all checks are successful
         const {refreshToken , accessToken} = await generateAccessAndRefreshTokens(user._id);
     
         res.status(200)
