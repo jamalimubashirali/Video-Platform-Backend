@@ -102,7 +102,54 @@ const deleteComment = asyncHandler(async (req , res) =>{
 })
 
 const getAllComments = asyncHandler(async (req , res) => {
+    const {videoId} = req.params;
 
+    if(!videoId) {
+        throw new ApiError(
+            400,
+            "Unalble to get the comments"
+        );
+    }
+
+    const allComments = await Comment.aggregate(
+        [
+            {
+                $match : {
+                    video : videoId
+                }
+            },
+            {
+                $lookup : {
+                    from : "Video",
+                    foreignField : "_id",
+                    localField : "video",
+                    as : "comment"
+                }
+            },
+            {
+                $lookup : {
+                    from : "User",
+                    foreignField : "_id",
+                    localField : "owner",
+                    as : "user"
+                }
+            },{
+                $addFields : {
+                    fullName : "$user.fullname",
+                    username : "$user.usename",
+                    avatar : "$user.avatar"
+                }
+            },
+            {
+                $project : {
+                    fullName : 1,
+                    username : 1,
+                    avatar : 1,
+                    content : 1
+                }
+            }
+        ]
+    )
 });
 
 export {

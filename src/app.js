@@ -15,10 +15,12 @@ app.use(cookieParser());
 
 // Routes
 import userRouter from "./routes/user.routes.js";
+import videorRouter from "./routes/video.routes.js";
 import { errorHandler } from "./middlewares/errorHandling.middleware.js";
 
 // Routes Declaration
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/videos', videorRouter);
 
 app.use(errorHandler)
 

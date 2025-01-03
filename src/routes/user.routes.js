@@ -16,10 +16,10 @@ import { upload } from "../middlewares/multer.middleware.js";
 import multer from "multer";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-const router = Router();
+const userRouter = Router();
 
 // Define the POST route
-router.post(
+userRouter.post(
   "/register",
   (req, res, next) => {
     upload.fields([
@@ -37,24 +37,24 @@ router.post(
   registerUser
 );
 
-router.post("/login", loginUser);
+userRouter.post("/login", loginUser);
 
 // secure routes
-router.post("/logout", verifyJWT, logoutUser);
-router.post("/refresh-token", getNewRefreshToken);
-router.post("/change-password", verifyJWT, changeCurrentPassword);
-router.get("/current-user", verifyJWT, getCurrentUser);
-router.patch("/edit-user", verifyJWT, updateUserDetails);
+userRouter.post("/logout", verifyJWT, logoutUser);
+userRouter.post("/refresh-token", getNewRefreshToken);
+userRouter.post("/change-password", verifyJWT, changeCurrentPassword);
+userRouter.get("/current-user", verifyJWT, getCurrentUser);
+userRouter.patch("/edit-user", verifyJWT, updateUserDetails);
 
-router.patch("/avatar", verifyJWT, upload.single("avatar"), updateUserAvatar);
-router.patch(
+userRouter.patch("/avatar", verifyJWT, upload.single("avatar"), updateUserAvatar);
+userRouter.patch(
   "/cover-image",
   verifyJWT,
   upload.single("coverImage"),
   updateUserCoverImage
 );
 
-router.get("/:username", verifyJWT, getUserChannelProfile);
-router.get("/watch-history", verifyJWT, getWatchHistory);
+userRouter.get("/:username", verifyJWT, getUserChannelProfile);
+userRouter.get("/watch-history", verifyJWT, getWatchHistory);
 
-export default router;
+export default userRouter;
