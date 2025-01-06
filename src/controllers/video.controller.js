@@ -5,7 +5,6 @@ import { Video } from "../models/video.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudnary.js";
 
-
 // Publish Video Controller
 const publishVideo = asyncHandler(async (req, res) => {
   const { description, title } = req.body;
@@ -59,7 +58,6 @@ const publishVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, publishedVideo, "Video Published Successfully"));
 });
 
-
 // Get a Video controller
 const getVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -81,7 +79,6 @@ const getVideo = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, video, "The video found successfully"));
 });
-
 
 // Update Video Details controller
 const updateVideoDetails = asyncHandler(async (req, res) => {
@@ -109,7 +106,6 @@ const updateVideoDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updateVideo, "Updates made successfully"));
 });
 
-
 // Delete Video Controller
 const deleteVideo = asyncHandler(async (req, res) => {
   const videoId = req.params;
@@ -127,4 +123,11 @@ const deleteVideo = asyncHandler(async (req, res) => {
   return res.status(200).json(200, "Video Deleted Successfully");
 });
 
-export { getVideo, deleteVideo, updateVideoDetails, publishVideo };
+const getAllVideos = asyncHandler(async (req, res) => {});
+export {
+  getVideo,
+  deleteVideo,
+  updateVideoDetails,
+  publishVideo,
+  getAllVideos,
+};
