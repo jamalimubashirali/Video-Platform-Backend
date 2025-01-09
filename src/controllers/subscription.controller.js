@@ -38,22 +38,14 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Subscription removed Successfully"));
 });
 
-const getUserChannelSubscribers = asyncHandler(
-    async(req , res)=>{
-        const {channelId} = req.params
-    }
-);
+const getUserChannelSubscribers = asyncHandler(async (req, res) => {
+  const { channelId } = req.params;
+});
 
-const getSubscriberdChannels = asyncHandler(
-    async(req , res) => {
-
-    }
-);
+const getSubscriberdChannels = asyncHandler(async (req, res) => {});
 
 export {
-    toggleSubscription,
-    getSubscriberdChannels,
-    getUserChannelSubscribers
-}
-
-
+  toggleSubscription,
+  getSubscriberdChannels,
+  getUserChannelSubscribers,
+};
