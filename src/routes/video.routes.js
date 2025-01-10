@@ -1,11 +1,11 @@
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { Router } from "express";
-import { publishVideo } from "../controllers/video.controller.js";
+import { deleteVideo, getAllVideos, getVideo, publishVideo, updateVideoDetails } from "../controllers/video.controller.js";
 
-const videorRouter = Router();
+const videoRouter = Router();
 
-videorRouter.post('/publish-video' , verifyJWT, upload.fields([
+videoRouter.post('/publish-video' , verifyJWT, upload.fields([
     {
         name : "videoFile",
         maxCount : 1
@@ -16,6 +16,11 @@ videorRouter.post('/publish-video' , verifyJWT, upload.fields([
     }
 ]) , publishVideo);
 
+videoRouter.get('/:videoId' , verifyJWT ,  getVideo);
+videoRouter.patch('/:videoId' , verifyJWT , updateVideoDetails);
+videoRouter.delete('/:videoid' , verifyJWT , deleteVideo);
+videoRouter.get('/' , verifyJWT, getAllVideos);
 
-export default videorRouter;
+
+export default videoRouter;
 

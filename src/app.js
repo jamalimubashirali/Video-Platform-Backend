@@ -15,12 +15,17 @@ app.use(cookieParser());
 
 // Routes
 import userRouter from "./routes/user.routes.js";
-import videorRouter from "./routes/video.routes.js";
+import videoRouter from "./routes/video.routes.js";
 import { errorHandler } from "./middlewares/errorHandling.middleware.js";
 
 // Routes Declaration
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/videos', videorRouter);
+app.use('/api/v1/videos', videoRouter);
+// app.use('/api/v1/comments' , commentRouter);
+// app.use('/api/v1/likes' , likesRouter);
+// app.use('/api/v1/subscribers' , subscriberRouter);
+// app.use('/api/v1/tweets' , tweetRouter);
+// app.use('/api/v1/playlists', playlistRouter);
 
 app.use(errorHandler)
 
