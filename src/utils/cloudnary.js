@@ -23,16 +23,13 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
         // Cleanup: Remove the local file after upload
         await fs.unlink(localFilePath);
-        console.log("Local file deleted after upload.");
 
         return response;
     } catch (error) {
         console.error("Error uploading file to Cloudinary:", error);
-
         // Attempt to delete the local file if upload fails
         try {
             await fs.unlink(localFilePath);
-            console.log("Local file deleted after upload failure.");
         } catch (unlinkError) {
             console.error("Error deleting local file:", unlinkError);
         }

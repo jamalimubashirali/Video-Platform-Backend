@@ -48,33 +48,38 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   const userChannelSubscribers = await Subscription.aggregate([
     {
       $match: {
-        channel: channelId,
+        channel: new mongoose.Types.ObjectId("6762a8fb7438dea6b21eadec"),
       },
     },
     {
       $lookup: {
-        from: "User",
-        foreignField: "_id",
+        from: "users",
         localField: "subscriber",
+        foreignField: "_id",
         as: "subscribers",
       },
     },
     {
-      $addFields: {
-        userSubscribers: {
-          $size: "$subscribers",
+      $unwind: "$subscribers",
+    },
+    {
+      $group: {
+        _id: "$channel",
+        subscribers: {
+          $push: {
+            username: "$subscribers.username",
+            fullname: "$subscribers.fullname",
+            avatar: "$subscribers.avatar",
+          },
         },
-        name: "$subscribers.firstname",
-        username: "$subscriber.username",
-        avatar: "$subscribers.avatar",
+        subscriberCount: { $sum: 1 }, // Counts the number of subscribers
       },
     },
     {
       $project: {
-        userSubscribers: 1,
-        name: 1,
-        username: 1,
-        avatar: 1,
+        _id: 0, // Exclude the group ID field
+        subscribers: 1,
+        subscriberCount: 1,
       },
     },
   ]);
@@ -98,32 +103,39 @@ const getSubscriberdChannels = asyncHandler(async (req, res) => {
 
   const userSubscriberedChannles = await Subscription.aggregate([
     {
-      $match: {
-        subscriber: subscriberId,
-      },
+    $match: {
+      subscriber : new mongoose.Types.ObjectId(subscriberId)
+    }
     },
-    {
+     {
       $lookup: {
-        from: "User",
-        foreignField: "_id",
+        from: "users",
         localField: "channel",
-        as: "subscribedChannels",
-      },
+        foreignField: "_id",
+        as: "channels"
+      } 
     },
     {
-      $addFields: {
-        name: "$subscribedChannels.fullname",
-        avatar: "$subscribedChannels.avatar",
-        username: "$subscribedChannels.username",
-      },
+      $unwind: "$channels"
     },
     {
-      $project: {
-        name: 1,
-        avatar: 1,
-        username: 1,
-      },
+      $group: {
+        _id: "$channel",
+        subscribedChannels : {
+          $push : {
+            username : "$channels.username",
+            fullname : "$channels.fullname",
+            avatar : "$channels.avatar"
+          }
+        }
+      }
     },
+    {
+      $project : {
+        _id : 0,
+        subscribedChannels : 1
+      }
+    }
   ]);
 
   return res
