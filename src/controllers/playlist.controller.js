@@ -76,7 +76,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Add user params");
   }
 
-  const userPlaylist = await PlayList.find(userId);
+  const userPlaylist = await PlayList.find({
+    owner: new mongoose.Types.ObjectId(userId),
+  });
 
   if (!userPlaylist) {
     throw new ApiError(404, "The user not found with this Id");
@@ -166,6 +168,13 @@ const removePlaylistVideo = asyncHandler(async (req, res) => {
       new: true,
     }
   );
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      updatedPlaylist,
+      "Video Successfully removed from the playlist"
+    )
+  )
 });
 
 export {

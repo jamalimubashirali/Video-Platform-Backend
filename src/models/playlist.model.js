@@ -12,7 +12,7 @@ const playListSchema = new Schema(
                 ref : "Video"
             }
         ],
-        content : {
+        name : {
             type : String,
             required : true
         },

@@ -11,7 +11,9 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please include id for request");
   }
 
-  const existingLike = await Likes.findOne(videoId);
+  const existingLike = await Likes.findOne({
+    video: new mongoose.Types.ObjectId(videoId),
+  });
 
   if (existingLike) {
     await Likes.findByIdAndDelete(existingLike._id);
@@ -23,7 +25,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   const newLike = await Likes.create({
     video: videoId,
     likedBy: req.user?._id,
-  }).select("-comment -tweet");
+  });
 
   return res
     .status(201)
@@ -37,7 +39,9 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please Add Comment Id");
   }
 
-  const existingLike = await Likes.findOne(commentId);
+  const existingLike = await Likes.findOne({
+    comment: new mongoose.Types.ObjectId(commentId),
+  });
 
   if (existingLike) {
     await Likes.findByIdAndDelete(existingLike._id);
@@ -49,7 +53,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   const newLike = await Likes.create({
     comment: commentId,
     likedBy: req.user?._id,
-  }).select("-video -tweet");
+  });
 
   return res.status(201).json(new ApiResponse(201, newLike, "Comment liked"));
 });
@@ -61,7 +65,9 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please add tweet Id");
   }
 
-  const existingLike = await Likes.findOne(tweetId);
+  const existingLike = await Likes.findOne({
+    tweet: new mongoose.Types.ObjectId(tweetId),
+  });
 
   if (existingLike) {
     await Likes.findByIdAndDelete(existingLike._id);
@@ -73,18 +79,78 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
   const newLike = await Likes.create({
     tweet: tweetId,
     likedBy: req.user?._id,
-  }).select("-comment -video");
+  });
 
   return res
     .status(201)
     .json(new ApiResponse(201, newLike, "Like added to Tweet"));
 });
 
-const getAllVideoLikes = asyncHandler(async (req, res) => {});
+const getAllVideoLikes = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
 
-const getAllTweetLikes = asyncHandler(async (req, res) => {});
+  if (!videoId) {
+    throw new ApiError(400, "Please Provide the Likes for the Video");
+  }
 
-const getAllCommentLikes = asyncHandler(async (req, res) => {});
+  const numberOfLikes = await Likes.find({
+    video: new mongoose.Types.ObjectId(videoId),
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        numberOfLikes.length,
+        "Video Likes Successfully added"
+      )
+    );
+});
+
+const getAllTweetLikes = asyncHandler(async (req, res) => {
+  const { tweetId } = req.params;
+
+  if (!tweetId) {
+    throw new ApiError(400, "Please Provide the Likes for the Video");
+  }
+
+  const numberOfLikes = await Likes.find({
+    tweet: new mongoose.Types.ObjectId(tweetId),
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        numberOfLikes.length,
+        "Video Likes Successfully added"
+      )
+    );
+});
+
+const getAllCommentLikes = asyncHandler(async (req, res) => {
+  const { commentId } = req.params;
+
+  if (!commentId) {
+    throw new ApiError(400, "Please Provide the Likes for the Video");
+  }
+
+  const numberOfLikes = await Likes.find({
+    comment: new mongoose.Types.ObjectId(commentId),
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        numberOfLikes.length,
+        "Video Likes Successfully added"
+      )
+    );
+});
 
 export {
   toggleCommentLike,

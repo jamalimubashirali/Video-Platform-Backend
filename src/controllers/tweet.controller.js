@@ -22,7 +22,7 @@ const createTweet = asyncHandler(async (req, res) => {
 });
 
 const getUserTweets = asyncHandler(async (req, res) => {
-  const userId = req.user?._id;
+  const { userId } = req.params;
 
   if (!userId) {
     throw new ApiError(400, "Unauthorized User");
@@ -31,7 +31,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
   const userTweets = await Tweets.aggregate([
     {
       $match: {
-        owner: userId,
+        owner: new mongoose.Types.ObjectId(userId),
       },
     },
     {
@@ -65,7 +65,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
-  const tweetId = req.params;
+  const {tweetId} = req.params;
   const { content } = req.body;
 
   if (!content || !tweetId) {
@@ -94,7 +94,7 @@ const updateTweet = asyncHandler(async (req, res) => {
 });
 
 const deleteTweet = asyncHandler(async (req, res) => {
-  const tweetId = req.params;
+  const {tweetId} = req.params;
   if (!tweetId) {
     throw new ApiError(400, "Please add the Id");
   }
