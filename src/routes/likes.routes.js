@@ -7,7 +7,7 @@ const likesRouter = Router();
 // Likes Routes
 likesRouter.use(verifyJWT);
 likesRouter.post('/toggle-video-like/:videoId' , toggleVideoLike);
-likesRouter.post('toggle-comment-like/:commentId' , toggleCommentLike);
+likesRouter.post('/toggle-comment-like/:commentId' , toggleCommentLike);
 likesRouter.post('/toggle-tweet-like/:tweetId' , toggleTweetLike);
 likesRouter.get('/video-likes/:videoId' , getAllVideoLikes);
 likesRouter.get('/comment-likes/:commentId' , getAllCommentLikes);

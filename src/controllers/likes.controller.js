@@ -12,7 +12,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   }
 
   const existingLike = await Likes.findOne({
-    video: new mongoose.Types.ObjectId(videoId),
+    likedBy: new mongoose.Types.ObjectId(req.user?._id),
   });
 
   if (existingLike) {
@@ -40,7 +40,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   }
 
   const existingLike = await Likes.findOne({
-    comment: new mongoose.Types.ObjectId(commentId),
+    likedBy: new mongoose.Types.ObjectId(req.user?._id),
   });
 
   if (existingLike) {
@@ -66,7 +66,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
   }
 
   const existingLike = await Likes.findOne({
-    tweet: new mongoose.Types.ObjectId(tweetId),
+    likedBy: new mongoose.Types.ObjectId(req.user?._id),
   });
 
   if (existingLike) {
@@ -93,17 +93,52 @@ const getAllVideoLikes = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please Provide the Likes for the Video");
   }
 
-  const numberOfLikes = await Likes.find({
-    video: new mongoose.Types.ObjectId(videoId),
-  });
+  const numberOfLikes = await Likes.aggregate(
+    [
+      {
+        $match: {
+          video : new mongoose.Types.ObjectId(videoId)
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "likedBy",
+          foreignField: "_id",
+          as: "users"
+        }
+      },
+      {
+        $unwind: "$users"
+      },
+      {
+        $group: {
+          _id: "$video",
+          usersLikedBy : {
+            $push : {
+              username : "$users.username",
+              fullname : "$users.fullname",
+              avatar : "$users.avatar"
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id : 0,
+          usersLikedBy : 1
+        }
+      }
+    ]
+  )
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        numberOfLikes.length,
-        "Video Likes Successfully added"
+        numberOfLikes[0]?.usersLikedBy,
+        "Video Likes Successfully"
       )
     );
 });
@@ -115,16 +150,51 @@ const getAllTweetLikes = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please Provide the Likes for the Video");
   }
 
-  const numberOfLikes = await Likes.find({
-    tweet: new mongoose.Types.ObjectId(tweetId),
-  });
+  const numberOfLikes = await Likes.aggregate(
+    [
+      {
+        $match: {
+          tweet : new mongoose.Types.ObjectId(tweetId)
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "likedBy",
+          foreignField: "_id",
+          as: "users"
+        }
+      },
+      {
+        $unwind: "$users"
+      },
+      {
+        $group: {
+          _id: "$video",
+          usersLikedBy : {
+            $push : {
+              username : "$users.username",
+              fullname : "$users.fullname",
+              avatar : "$users.avatar"
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id : 0,
+          usersLikedBy : 1
+        }
+      }
+    ]
+  )
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        numberOfLikes.length,
+        numberOfLikes[0]?.usersLikedBy,
         "Video Likes Successfully added"
       )
     );
@@ -137,16 +207,51 @@ const getAllCommentLikes = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please Provide the Likes for the Video");
   }
 
-  const numberOfLikes = await Likes.find({
-    comment: new mongoose.Types.ObjectId(commentId),
-  });
+  const numberOfLikes = await Likes.aggregate(
+    [
+      {
+        $match: {
+          comment : new mongoose.Types.ObjectId(commentId)
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "likedBy",
+          foreignField: "_id",
+          as: "users"
+        }
+      },
+      {
+        $unwind: "$users"
+      },
+      {
+        $group: {
+          _id: "$video",
+          usersLikedBy : {
+            $push : {
+              username : "$users.username",
+              fullname : "$users.fullname",
+              avatar : "$users.avatar"
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id : 0,
+          usersLikedBy : 1
+        }
+      }
+    ]
+  )
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        numberOfLikes.length,
+        numberOfLikes[0]?.usersLikedBy,
         "Video Likes Successfully added"
       )
     );

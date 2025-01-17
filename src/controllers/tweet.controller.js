@@ -31,32 +31,39 @@ const getUserTweets = asyncHandler(async (req, res) => {
   const userTweets = await Tweets.aggregate([
     {
       $match: {
-        owner: new mongoose.Types.ObjectId(userId),
-      },
+        owner : new mongoose.Types.ObjectId(userId)
+      }
     },
     {
       $lookup: {
-        from: "User",
+        from: "users",
         localField: "owner",
         foreignField: "_id",
-        as: "user",
-      },
+        as: "users"
+      }
     },
     {
-      $addFields: {
-        fullname: "$user.fullname",
-        username: "$user.username",
-        avatar: "$user.avatar",
-      },
+      $unwind: "$users"
+    },
+    {
+      $group: {
+        _id: "$owner",
+        userTweets : {
+          $push : {
+            fullname : "$users.fullname",
+            username : "$users.username",
+            avatar : "$users.avatar",
+            content : "$content"
+          }
+        }
+      }
     },
     {
       $project: {
-        content: 1,
-        fullname: 1,
-        username: 1,
-        avatar: 1,
-      },
-    },
+        _id : 0,
+        userTweets : 1
+      }
+    }
   ]);
 
   return res
