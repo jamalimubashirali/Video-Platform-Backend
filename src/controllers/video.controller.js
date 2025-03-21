@@ -123,7 +123,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
   return res.status(200).json(200, "Video Deleted Successfully");
 });
 
-const getAllVideos = asyncHandler(async (req, res) => {
+const getAllUserVideos = asyncHandler(async (req, res) => {
   const {userId} = req.query;
 
   if(!userId){
@@ -157,10 +157,31 @@ const getAllVideos = asyncHandler(async (req, res) => {
     )
   );
 });
+
+const getAllVideos = asyncHandler(async (req, res) => {
+  const videos = await Video.find({});
+
+  if (videos.length) {
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        videos,
+        "Their are no Videos in the database"
+      )
+    );
+  }
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      videos,
+      "Videos Fetched Successfully"));
+});
 export {
   getVideo,
   deleteVideo,
   updateVideoDetails,
   publishVideo,
+  getAllUserVideos,
   getAllVideos,
 };

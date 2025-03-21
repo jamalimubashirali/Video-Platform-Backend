@@ -19,7 +19,7 @@ videoRouter.post('/publish-video' , verifyJWT, upload.fields([
 videoRouter.get('/:videoId' , verifyJWT ,  getVideo);
 videoRouter.patch('/:videoId' , verifyJWT , updateVideoDetails);
 videoRouter.delete('/:videoid' , verifyJWT , deleteVideo);
-videoRouter.get('/' , verifyJWT, getAllVideos);
+videoRouter.get('/' , getAllVideos);
 
 
 export default videoRouter;
