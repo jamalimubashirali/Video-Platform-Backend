@@ -45,7 +45,6 @@ userRouter.post("/refresh-token", getNewRefreshToken);
 userRouter.post("/change-password", verifyJWT, changeCurrentPassword);
 userRouter.get("/current-user", verifyJWT, getCurrentUser);
 userRouter.patch("/edit-user", verifyJWT, updateUserDetails);
-
 userRouter.patch("/avatar", verifyJWT, upload.single("avatar"), updateUserAvatar);
 userRouter.patch(
   "/cover-image",
@@ -53,7 +52,6 @@ userRouter.patch(
   upload.single("coverImage"),
   updateUserCoverImage
 );
-
 userRouter.get("/:username", verifyJWT, getUserChannelProfile);
 userRouter.get("/watch-history", verifyJWT, getWatchHistory);
 
