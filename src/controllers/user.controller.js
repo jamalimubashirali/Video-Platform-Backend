@@ -44,7 +44,9 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User already exists");
   }
 
+
   // Get the uploaded file paths
+  console.log("req.files: ", req.files);
   const avatarLocalPath = req.files?.avatar[0]?.path;
   const coverImageLocalPath =
     req.files?.coverImage === undefined ? "" : req.files?.coverImage[0]?.path;
@@ -56,6 +58,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // Upload images to Cloud server
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
 
   if (!avatar) {
     throw new ApiError(400, "This field is required");
@@ -70,6 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     username: username.toLowerCase(),
   });
+
 
   // Check if user is created Successfully in the database or not
   const createdUser = await User.findById(user._id).select(
